@@ -1,5 +1,3 @@
-import { Sparkles } from "lucide-react";
-
 export default function EmptyState() {
   return (
     <section
@@ -7,22 +5,25 @@ export default function EmptyState() {
       data-testid="empty-state"
       aria-labelledby="empty-state-heading"
     >
-      <span className="inline-flex w-fit items-center gap-1.5 rounded-full border border-border bg-muted px-3 py-1 font-[IBM_Plex_Mono] text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-        <Sparkles size={11} /> client-only · zero uploads
-      </span>
+      <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground/60 mb-2">
+        <span>01</span>
+        <span>·</span>
+        <span>Upload</span>
+      </div>
+
       <h1
         id="empty-state-heading"
-        className="font-[Work_Sans] text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl"
+        className="text-5xl font-black leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl text-foreground"
       >
-        Read markdown the way{" "}
-        <span className="text-accent">it was meant</span> to be read.
+        Drop a markdown file.
+        <span className="block text-gradient mt-1">
+          See it, copy it, ship it.
+        </span>
       </h1>
-      <p className="max-w-[62ch] text-base text-muted-foreground sm:text-lg">
-        Drop a <code className="rounded bg-muted px-1.5 py-0.5 font-[JetBrains_Mono] text-[0.85em]">.md</code>{" "}
-        file below. The renderer covers the full GitHub-Flavored spec — tables,
-        task lists, fenced code with syntax highlighting, nested quotes — and
-        the copy button hands you a rich-text payload that pastes cleanly into
-        Word, Google Docs, Slack, or Notion.
+
+      <p className="max-w-[62ch] text-base text-muted-foreground/80 sm:text-lg mt-3 leading-relaxed">
+        A precise, offline viewer for GitHub-Flavored Markdown. Copies to Word,
+        Google Docs, Slack, Notion — with formatting intact.
       </p>
     </section>
   );

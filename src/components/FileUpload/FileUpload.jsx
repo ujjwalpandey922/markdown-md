@@ -51,10 +51,10 @@ export default function FileUpload({
   };
 
   const stateClass = isDragging
-    ? "border-solid border-accent bg-accent/5 ring-2 ring-accent"
+    ? "border-accent bg-accent/5 ring-2 ring-accent/30"
     : status === "error"
-      ? "border-solid border-destructive/60 bg-destructive/5"
-      : "border-transparent bg-muted/30 dropzone-idle";
+      ? "border-destructive/60 bg-destructive/5"
+      : "border-border/60 bg-black/20 dark:bg-black/40 hover:bg-black/35 hover:border-foreground/30";
 
   return (
     <div className="flex flex-col gap-3">
@@ -78,31 +78,37 @@ export default function FileUpload({
         onDragLeave={handleDragLeave}
         onClick={() => inputRef.current?.click()}
         onKeyDown={handleKeyDown}
-        className={`group relative flex min-h-[280px] cursor-pointer flex-col items-center justify-center gap-4 rounded-md border p-10 text-center transition-colors ${stateClass}`}
+        className={`group relative flex min-h-[300px] cursor-pointer flex-col items-center justify-center gap-5 rounded-lg border-2 border-dashed p-10 text-center transition-all ${stateClass}`}
       >
-        <div className="pointer-events-none flex h-16 w-16 items-center justify-center rounded-full border border-foreground/70 bg-background text-foreground">
+        {/* Top Left Badge */}
+        <span className="absolute top-4 left-4 text-[9px] font-semibold uppercase tracking-[0.25em] text-muted-foreground/60">
+          ZONE · A
+        </span>
+
+        {/* Upload Icon */}
+        <div className="pointer-events-none flex h-14 w-14 items-center justify-center rounded-full border border-border/80 bg-background/50 text-foreground/80 shadow-sm group-hover:scale-105 transition-all">
           {isParsing ? (
-            <Loader2 className="animate-spin" size={26} />
+            <Loader2 className="animate-spin" size={20} />
           ) : (
-            <UploadCloud size={28} strokeWidth={1.5} />
+            <UploadCloud size={22} strokeWidth={1.8} />
           )}
         </div>
 
-        <div className="flex flex-col gap-1">
-          <p className="font-[Work_Sans] text-xl font-semibold tracking-tight">
-            {isParsing ? "Reading your file…" : "Drop a markdown file here"}
+        {/* Typography content */}
+        <div className="flex flex-col gap-1.5">
+          <p className="text-xl font-bold tracking-tight text-foreground">
+            {isParsing
+              ? "Reading your file…"
+              : "Drag & drop, or click to browse"}
           </p>
-          <p className="text-sm text-muted-foreground">
-            or{" "}
-            <span className="underline decoration-accent decoration-2 underline-offset-4">
-              click to browse
-            </span>{" "}
-            — .md, .markdown, .txt · up to 5 MB
+          <p className="text-xs font-[IBM_Plex_Mono] tracking-wide text-muted-foreground/80">
+            .md · .markdown · .txt · up to 5 MB
           </p>
         </div>
 
-        <span className="pointer-events-none inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1 font-[IBM_Plex_Mono] text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-          <FileUp size={11} /> single file · offline
+        {/* Bottom Right Badge */}
+        <span className="absolute bottom-4 right-4 text-[9px] font-semibold uppercase tracking-[0.2em] text-muted-foreground/60">
+          LOCAL-ONLY · NO UPLOAD
         </span>
 
         <input

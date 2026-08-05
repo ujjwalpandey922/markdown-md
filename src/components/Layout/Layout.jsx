@@ -2,25 +2,27 @@ import { FileText, Moon, Sun } from "lucide-react";
 
 export default function Layout({ theme, onToggleTheme, children }) {
   return (
-    <div className="min-h-screen bg-background text-foreground noise-bg">
+    <div className="min-h-screen bg-background text-foreground noise-bg grid-bg">
       <header
-        className="sticky top-0 z-40 border-b border-border/70 bg-background/70 backdrop-blur-xl"
+        className="sticky top-0 z-40 border-b border-border/40 bg-background/80 backdrop-blur-md"
         data-testid="app-header"
       >
-        <div className="mx-auto flex w-full max-w-[1200px] items-center justify-between gap-4 px-4 py-3 sm:px-8">
+        <div className="mx-auto flex w-full max-w-[1200px] items-center justify-between gap-4 px-4 py-4 sm:px-8">
           <a
             href="/"
-            className="group flex items-center gap-2.5"
+            className="group flex items-center gap-3"
             data-testid="app-logo"
           >
-            <span className="grid h-8 w-8 place-items-center rounded-sm border border-foreground/80 bg-foreground text-background">
-              <FileText size={16} strokeWidth={2.5} />
+            <span className="grid h-8 w-8 place-items-center rounded bg-foreground text-background font-black text-lg transition-transform group-hover:scale-105">
+              G
             </span>
-            <span className="flex items-baseline gap-1.5 font-[IBM_Plex_Mono] text-sm tracking-tight">
-              <span className="font-semibold">MDR</span>
-              <span className="hidden text-muted-foreground sm:inline">
-                / markdown renderer
-              </span>
+            <span className="flex items-center gap-2 font-[IBM_Plex_Mono] text-xs tracking-wider uppercase">
+              <span className="font-bold text-foreground">Grid.md</span>
+              <span className="text-muted-foreground/40">MARKDOWN</span>
+              <span className="text-muted-foreground/40">•</span>
+              <span className="text-muted-foreground/40">LOCAL</span>
+              <span className="text-muted-foreground/40">•</span>
+              <span className="text-muted-foreground/40">V1</span>
             </span>
           </a>
 
@@ -34,9 +36,19 @@ export default function Layout({ theme, onToggleTheme, children }) {
                   : "Switch to dark mode"
               }
               data-testid="theme-toggle-btn"
-              className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-border bg-transparent text-foreground transition-colors hover:bg-muted"
+              className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-border/80 bg-background text-foreground hover:bg-muted text-[11px] font-semibold uppercase tracking-wider transition-colors shadow-sm"
             >
-              {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+              {theme === "dark" ? (
+                <>
+                  <Sun size={12} className="text-amber-500" />
+                  <span>Light</span>
+                </>
+              ) : (
+                <>
+                  <Moon size={12} className="text-indigo-500" />
+                  <span>Dark</span>
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -44,14 +56,10 @@ export default function Layout({ theme, onToggleTheme, children }) {
 
       <main data-testid="app-main">{children}</main>
 
-      <footer className="border-t border-border/60">
-        <div className="mx-auto flex w-full max-w-[1200px] items-center justify-between gap-4 px-4 text-xs text-muted-foreground sm:px-8">
-          <span className="font-[IBM_Plex_Mono] tracking-[0.15em]">
-            MDR · GFM · CLIENT-ONLY
-          </span>
-          <span className="font-[IBM_Plex_Mono] tracking-[0.15em]">
-            NO NETWORK · NO TELEMETRY
-          </span>
+      <footer className="border-t border-border/40 py-6 mt-12 bg-background/50">
+        <div className="mx-auto flex w-full max-w-[1200px] items-center justify-between gap-4 px-4 text-[10px] text-muted-foreground/80 sm:px-8 uppercase font-[IBM_Plex_Mono] tracking-[0.2em]">
+          <span>GRID.MD · GFM · CLIENT-ONLY</span>
+          <span className="hidden sm:inline">NO NETWORK · NO TELEMETRY</span>
         </div>
       </footer>
     </div>
