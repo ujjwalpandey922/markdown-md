@@ -1,4 +1,4 @@
-import { FileText, Moon, Sun } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 
 export default function Layout({ theme, onToggleTheme, children }) {
   return (
@@ -16,7 +16,7 @@ export default function Layout({ theme, onToggleTheme, children }) {
             <span className="grid h-8 w-8 place-items-center rounded bg-foreground text-background font-black text-lg transition-transform group-hover:scale-105">
               G
             </span>
-            <span className="flex items-center gap-2 font-[IBM_Plex_Mono] text-xs tracking-wider uppercase">
+            <span className="flex items-center gap-2 font-[IBM_Plex_Mono] max-sm:hidden text-xs tracking-wider uppercase">
               <span className="font-bold text-foreground">Grid.md</span>
               <span className="text-muted-foreground/40">MARKDOWN</span>
               <span className="text-muted-foreground/40">•</span>

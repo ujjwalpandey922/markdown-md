@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { AlertCircle, FileUp, Loader2, UploadCloud } from "lucide-react";
+import { AlertCircle, Loader2, UploadCloud } from "lucide-react";
 
 /**
  * Drag-and-drop + click-to-browse upload zone.
