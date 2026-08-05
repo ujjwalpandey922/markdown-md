@@ -9,6 +9,7 @@ export default function FileUpload({
   status,
   error,
   onFile,
+  onLoadSample,
   onDragStateChange,
   isDragging,
   isParsing,
@@ -122,6 +123,18 @@ export default function FileUpload({
           tabIndex={-1}
         />
       </div>
+
+      {onLoadSample && (
+        <div className="flex justify-center mt-1">
+          <button
+            type="button"
+            onClick={onLoadSample}
+            className="text-xs font-[IBM_Plex_Mono] tracking-wide text-muted-foreground/70 hover:text-foreground underline underline-offset-4 transition-colors"
+          >
+            Or load a sample GFM document
+          </button>
+        </div>
+      )}
 
       {error ? (
         <div

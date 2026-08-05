@@ -65,6 +65,46 @@ export default function useFileUpload() {
     }
   }, []);
 
+  const loadSample = useCallback(() => {
+    const sampleText = `# GitHub-Flavored Markdown Demo
+
+A precise, offline viewer for GFM documents.
+
+## Features Checklist
+
+- [x] Full GitHub-Flavored Markdown support
+- [x] Syntax highlighting for code blocks
+- [x] Rich-text multi-format clipboard export
+- [ ] Offline local processing only
+
+## Sample Table
+
+| Feature | GFM Spec | Supported |
+| :--- | :---: | :---: |
+| Tables | Yes | ✅ |
+| Task Lists | Yes | ✅ |
+| Strikethrough | Yes | ✅ |
+
+## Code Example
+
+\`\`\`javascript
+// Quick copy button on every block!
+function renderMarkdown(input) {
+  return <MarkdownRenderer markdown={input} />;
+}
+\`\`\`
+
+> **Note:** Copies to Word, Google Docs, Slack, and Notion with formatting intact.
+`;
+
+    setStatus("loaded");
+    setFile({ name: "sample-gfm-demo.md", size: sampleText.length });
+    setMarkdown(sampleText);
+    setError(null);
+    setIsDragging(false);
+    toast.success("Loaded sample document");
+  }, []);
+
   return {
     status,
     file,
@@ -73,6 +113,7 @@ export default function useFileUpload() {
     isDragging,
     isParsing: status === "parsing",
     acceptFile,
+    loadSample,
     setDragging: setIsDragging,
     reset,
   };

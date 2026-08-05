@@ -76,6 +76,7 @@ export default function App() {
               status={upload.status}
               error={upload.error}
               onFile={upload.acceptFile}
+              onLoadSample={upload.loadSample}
               onDragStateChange={upload.setDragging}
               isDragging={upload.isDragging}
               isParsing={upload.isParsing}
