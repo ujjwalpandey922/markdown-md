@@ -13,11 +13,20 @@ import {
  * We render inline code with a subtle chip and fenced blocks with
  * PrismJS highlighting via react-syntax-highlighter.
  */
-export default function CodeBlock({ node, inline, className, children, ...rest }) {
+export default function CodeBlock({
+  node,
+  inline,
+  className,
+  children,
+  ...rest
+}) {
   const [copied, setCopied] = useState(false);
   const match = /language-(\w+)/.exec(className || "");
   const isFenced =
-    !inline && (match || String(children).includes("\n") || node?.position?.start?.line !== node?.position?.end?.line);
+    !inline &&
+    (match ||
+      String(children).includes("\n") ||
+      node?.position?.start?.line !== node?.position?.end?.line);
 
   if (!isFenced) {
     return (
@@ -42,7 +51,7 @@ export default function CodeBlock({ node, inline, className, children, ...rest }
   };
 
   return (
-    <div className="group relative my-4">
+    <div className="group relative">
       <div className="flex items-center justify-between rounded-t-md border border-b-0 border-border bg-muted px-3 py-1.5 font-[IBM_Plex_Mono] text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
         <span data-testid="code-lang">{language}</span>
         <button
