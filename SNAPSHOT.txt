@@ -1,0 +1,9 @@
+MDR — Markdown Renderer
+Snapshot taken: 2026-08-05T08:32:58.920Z
+
+Setup:
+  1. yarn install
+  2. yarn start        # dev server on :3000
+  3. yarn build        # production build to dist/
+
+This ZIP contains only the app source. Run `yarn install` to fetch node_modules.
