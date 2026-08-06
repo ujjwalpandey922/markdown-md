@@ -55,7 +55,7 @@ export default function FileUpload({
     ? "border-accent bg-accent/5 ring-2 ring-accent/30"
     : status === "error"
       ? "border-destructive/60 bg-destructive/5"
-      : "border-border/60 bg-black/20 dark:bg-black/40 hover:bg-black/35 hover:border-foreground/30";
+      : "border-border/60 bg-white/70 dark:bg-black/70 hover:bg-white/60 dark:hover:bg-black/60 hover:border-foreground/30";
 
   return (
     <div className="flex flex-col gap-3">
