@@ -6,6 +6,7 @@ import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import CodeBlock from "@/components/MarkdownRenderer/renderers/CodeBlock.jsx";
 import MdLink from "@/components/MarkdownRenderer/renderers/MdLink.jsx";
 import MdImage from "@/components/MarkdownRenderer/renderers/MdImage.jsx";
+import MdBlockquote from "@/components/MarkdownRenderer/renderers/MdBlockquote.jsx";
 
 /**
  * Sanitize schema. We *do* allow embedded HTML (GFM permits it), but strip
@@ -56,6 +57,7 @@ export default function MarkdownRenderer({ markdown }) {
       code: CodeBlock,
       a: MdLink,
       img: MdImage,
+      blockquote: MdBlockquote,
       // task list items get a data-testid via GFM plugin's default className
       li: ({ node, className, children, ...rest }) => {
         const isTask = (className || "").includes("task-list-item");

@@ -24,7 +24,7 @@ export default function CodeBlock({
   const [isDark, setIsDark] = useState(() =>
     typeof document !== "undefined"
       ? document.documentElement.classList.contains("dark")
-      : true
+      : true,
   );
 
   useEffect(() => {
