@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Check, Copy } from "lucide-react";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import {
@@ -21,6 +21,26 @@ export default function CodeBlock({
   ...rest
 }) {
   const [copied, setCopied] = useState(false);
+  const [isDark, setIsDark] = useState(() =>
+    typeof document !== "undefined"
+      ? document.documentElement.classList.contains("dark")
+      : true
+  );
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const observer = new MutationObserver(() => {
+      setIsDark(root.classList.contains("dark"));
+    });
+
+    observer.observe(root, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
+  }, []);
+
   const match = /language-(\w+)/.exec(className || "");
   const isFenced =
     !inline &&
@@ -38,7 +58,6 @@ export default function CodeBlock({
 
   const language = match ? match[1] : "text";
   const raw = String(children).replace(/\n$/, "");
-  const isDark = document.documentElement.classList.contains("dark");
 
   const handleCopy = async () => {
     try {
