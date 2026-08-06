@@ -1,82 +1,85 @@
 # MDR — Markdown Renderer
 
-A production-grade, client-side viewer for GitHub-Flavored Markdown. Drop a `.md`
-file in, read it beautifully, and copy the result as rich text that pastes cleanly
-into Word, Google Docs, Slack, or Notion. No backend, no accounts, no network calls.
+A production-grade, client-side viewer for GitHub-Flavored Markdown. Drop a `.md` file in, view complex markdown accurately, and copy the result as rich text that pastes cleanly into Microsoft Word, Google Docs, Slack, Notion, or rich text editors. No backend, no accounts, 100% browser-side.
 
-## Setup
+---
 
-```bash
-yarn install
-yarn start        # dev server on http://localhost:3000
-yarn build        # static production build → dist/
-yarn preview      # serve the built app locally
-```
+## Setup & Running Locally
 
-The build output in `dist/` is deploy-ready for Vercel / Netlify / Cloudflare Pages —
-no server runtime required.
+1. **Clone the repository:**
+   ```bash
+   git clone <YOUR_GITHUB_REPO_URL>
+   cd markdown-renderer
+   ```
 
-## Key design & technical decisions
+2. **Install dependencies:**
+   ```bash
+   yarn install
+   # or
+   npm install
+   ```
 
-- **Vite + React 18, JavaScript only.** No TypeScript in the shipped code (JSDoc
-  is used where a type hint helps).
-- **Markdown pipeline:** `react-markdown` + `remark-gfm` for parsing, `rehype-raw`
-  to allow embedded HTML (a real GFM feature), then `rehype-sanitize` with a
-  restricted schema to strip anything script-y. Uploaded files are untrusted, so
-  sanitization is on by default — inline `on*` handlers, `<script>`, and
-  `style="…"` attributes never survive.
-- **Syntax highlighting:** `react-syntax-highlighter` using PrismJS themes
-  (`oneDark` / `oneLight`) picked from the current theme. A small copy button
-  lives on each code block header — separate from the main "Copy Document"
-  action.
-- **Multi-format clipboard:** the primary Copy button constructs a
-  `ClipboardItem` with `text/html` + `text/plain`. The HTML is a walk of the
-  rendered DOM that emits *inlined* styles (semantic `<strong>`, `<em>`,
-  `<table>`, `<blockquote>`, `<pre>`) so it pastes correctly into Word / Docs /
-  Slack / Notion without needing an external stylesheet. Plain-text output is
-  markdown-stripped (not HTML tags). We degrade gracefully to
-  `navigator.clipboard.writeText` and finally `document.execCommand('copy')` for
-  older Safari / non-secure contexts.
-- **Error boundary at two layers:** one at the app root (`main.jsx`) and one
-  wrapping the markdown viewport, so a pathological document never blanks the
-  page — you still see the raw text.
-- **Architecture (SOLID):**
-  - `useFileUpload` owns the ingestion lifecycle (validation, reading, state).
-  - `useClipboardExport` depends on a `{ element, markdown }` shape, not the
-    live DOM/state directly — trivially unit-testable.
-  - `MarkdownRenderer` accepts a `components` override map so custom renderers
-    (Code, Image, Link) are additive extensions, not edits to a monolith.
-- **Download-app-ZIP** in the header uses `import.meta.glob('/src/**/*', { as: 'raw' })`
-  to snapshot the actual source at build time, packages it with `jszip`, and
-  streams it via `file-saver`. No server ever sees a request.
-- **Dark mode:** Tailwind `dark:` variant driven by a header toggle, persisted
-  to `localStorage`. Respects the initial `prefers-color-scheme`.
-- **Accessibility:** semantic headings preserved in the output, keyboard-operable
-  dropzone (Enter/Space to browse), visible focus rings, `aria-live` region
-  for copy-success, image alt-text is honored.
+3. **Run development server:**
+   ```bash
+   yarn dev
+   # or
+   npm run dev
+   ```
+   Open `http://localhost:3000` in your browser.
 
-## Edge cases handled
+4. **Build for production:**
+   ```bash
+   yarn build
+   # or
+   npm run build
+   ```
+   The static build output in `build/` (or `dist/`) is deploy-ready for Vercel, Netlify, or Cloudflare Pages — no server runtime required.
 
-- Malformed markdown (unclosed fences / links / emphasis) — parser is forgiving;
-  if it does throw, the boundary shows raw text.
-- Mixed line endings (CRLF / LF) and UTF-8 BOM are normalized on read.
-- Long unbroken strings wrap via `overflow-wrap: break-word`.
-- Broken images render an inline "image unavailable" chip instead of layout breakage.
-- Empty file / oversize file / binary file → friendly, non-technical error banner.
-- Task lists render as checkboxes (checked/unchecked), not literal `[ ]`.
-- Tables honour column alignment (`:---`, `:---:`, `---:`).
+---
 
-## What I'd improve with more time
+## Key Architecture & Design Decisions
 
-- **Virtualization for huge documents** (10k+ lines). Currently the whole tree
-  is rendered — the pipeline is fast enough for the target size but wouldn't
-  scale to book-length input without windowing.
-- **A collapsible table-of-contents sidebar** generated from headings, with
-  scroll-spy. Sketched, dropped to protect the required feature set.
-- **Anchor slugs with deduplication** for repeated heading text (currently
-  headings render without `id`s to sidestep collisions).
-- **User-supplied theme presets** (solarized, dracula) for the syntax
-  highlighter.
-- **A "print/PDF" button** using the browser's print pipeline with the same
-  inlined-style transform we use for the clipboard.
+- **Multi-MIME Clipboard Engine:** Implemented `buildClipboardPayload()` in `src/lib/markdownToClipboard.js` to construct a multi-format payload via `navigator.clipboard.write([new ClipboardItem(...)])`:
+  - `text/html`: Inlines CSS styles onto semantic HTML tags (`<strong>`, `<em>`, `<table>`, `<blockquote>`, `<pre>`) so formatted text pastes cleanly into MS Word and Google Docs.
+  - `text/plain`: Clean human-readable text representation.
+  - `text/markdown`: Raw Markdown source representation where supported by the browser.
+  - Fallbacks gracefully to `writeText` or `execCommand('copy')` on older browsers.
 
+- **GitHub-Flavored Callouts:** Built a custom `MdBlockquote` component that detects GitHub alert markers (`[!NOTE]`, `[!TIP]`, `[!IMPORTANT]`, `[!WARNING]`, `[!CAUTION]`), strips the literal marker text, and renders styled alert cards with corresponding Lucide icons (`Info`, `Lightbulb`, `AlertCircle`, `AlertTriangle`, `ShieldAlert`).
+
+- **Reactive Theme System:** Code blocks and syntax highlighters use a `MutationObserver` on `document.documentElement` to reactively toggle between light (`oneLight`) and dark (`oneDark`) themes in real-time when the theme mode changes.
+
+- **LaTeX Math Rendering:** Integrated `remark-math` and `rehype-katex` with `{ throwOnError: false }` and KaTeX CSS styling. Equation blocks (`$$...$$`) and inline math (`$...$`) render formatted typography and display invalid math errors gracefully in-line (mirroring GitHub's preview engine).
+
+- **Fault-Tolerant Parsing & Sanitization:** Pipeline powered by `react-markdown` + `remark-gfm` + `rehype-raw` + `rehype-sanitize`. Sanitization rules allow custom `className` attributes on `div`, `span`, and `code` for math and syntax highlighting while stripping dangerous scripts. Sealed with a React `ErrorBoundary` fallback to render raw text if parsing fails.
+
+- **Clean Component Architecture (SOLID):**
+  - `useFileUpload`: Manages ingestion, validation, reading, and state.
+  - `useClipboardExport`: Handles clipboard copying without direct DOM coupling.
+  - `MarkdownRenderer`: Provides an extensible `components` map for custom element overrides (`CodeBlock`, `MdBlockquote`, `MdLink`, `MdImage`).
+
+---
+
+## Use of AI Coding Assistants
+
+- Utilized AI pair programming assistance to refine custom AST blockquote parsers, build cross-browser multi-MIME clipboard fallback pipelines, and configure KaTeX sanitize schema attribute rules.
+
+---
+
+## Edge Cases Handled
+
+- **Malformed Markdown:** Parser handles unclosed code fences, missing link syntax, and malformed lists. Error boundary prevents blank screens.
+- **LaTeX Math Syntax Errors:** Handled via `throwOnError: false` to highlight errors visually without crashing.
+- **Encoding & Line Endings:** Normalizes mixed line endings (CRLF / LF) and UTF-8 BOM on file read.
+- **Layout Overflow:** Long unbroken strings wrap safely using `overflow-wrap: break-word`.
+- **Broken Images:** Displays an inline "image unavailable" chip instead of layout breakage.
+- **File Validation:** Friendly error banners for empty files, oversized files, or binary uploads.
+
+---
+
+## Future Improvements (With Additional Time)
+
+- **Live Side-by-Side Editing:** Add a dual-pane editor and live preview mode with real-time scroll sync.
+- **PDF & HTML Document Export:** Add one-click export buttons for downloading standalone HTML or PDF files.
+- **Collapsible Table of Contents:** Automatically generate a sticky sidebar table of contents with scroll-spy navigation.
+- **Virtualization for Large Documents:** Implement list/DOM windowing for 10k+ line Markdown files.

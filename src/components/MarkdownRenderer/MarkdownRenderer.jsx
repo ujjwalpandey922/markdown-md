@@ -1,8 +1,11 @@
 import { useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 import CodeBlock from "@/components/MarkdownRenderer/renderers/CodeBlock.jsx";
 import MdLink from "@/components/MarkdownRenderer/renderers/MdLink.jsx";
 import MdImage from "@/components/MarkdownRenderer/renderers/MdImage.jsx";
@@ -23,12 +26,15 @@ const sanitizeSchema = {
     "details",
     "summary",
     "mark",
+    "div",
+    "span",
   ],
   attributes: {
     ...defaultSchema.attributes,
-    // Allow className on code so syntax highlighting language classes survive.
+    // Allow className on code, span, div so syntax highlighting and math classes survive.
     code: [...(defaultSchema.attributes?.code || []), "className", "class"],
     span: [...(defaultSchema.attributes?.span || []), "className", "class"],
+    div: [...(defaultSchema.attributes?.div || []), "className", "class"],
     input: [
       ...(defaultSchema.attributes?.input || []),
       "checked",
@@ -40,6 +46,7 @@ const sanitizeSchema = {
       // Explicitly *don't* allow on*/style attributes.
       "id",
       "className",
+      "class",
     ],
   },
 };
@@ -85,8 +92,12 @@ export default function MarkdownRenderer({ markdown }) {
       className="md-body md-fade-in md-scroll mt-6"
     >
       <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeRaw, [rehypeSanitize, sanitizeSchema]]}
+        remarkPlugins={[remarkGfm, remarkMath]}
+        rehypePlugins={[
+          rehypeRaw,
+          [rehypeSanitize, sanitizeSchema],
+          [rehypeKatex, { throwOnError: false }],
+        ]}
         components={components}
         skipHtml={false}
       >
